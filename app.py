@@ -4,14 +4,15 @@ import google.generativeai as genai
 import os
 from dotenv import load_dotenv
 
+load_dotenv()
+
 app = Flask(__name__)
 CORS(app)
 
-load_dotenv()
+API_KEY = os.getenv("GEMINI_API_KEY")
 
-API_KEY  = os.getenv("GEMINI_API_KEY")
-
-genai.configure(api_key = API_KEY)
+if API_KEY:
+    genai.configure(api_key=API_KEY)
 
 model = genai.GenerativeModel('gemini-2.5-flash')
 
@@ -24,20 +25,27 @@ def simplify():
         return jsonify({"simplified": "No text provided."})
 
     try:
+        # STRICTER PROMPT
         prompt = f"""
-        Act as an accessibility assistant. 
-        1. Summarize the following text in very simple English (bullet points).
-        2. Explain any difficult words.
+        You are an assistive technology. Summarize the text below for a user with learning difficulties.
         
-        Text: {text[:2000]}
+        STRICT RULES:
+        1. Do NOT include introductory text like "Here is a summary" or "Sure!".
+        2. Do NOT use markdown headers (like ### or ***).
+        3. Start directly with the first bullet point.
+        4. Use simple English.
+        
+        Text: {text[:3000]}
         """
         
         response = model.generate_content(prompt)
-        return jsonify({"simplified": response.text})
+        # Extra safety: Strip leading/trailing whitespace
+        clean_text = response.text.strip()
+        return jsonify({"simplified": clean_text})
         
     except Exception as e:
         print(f"AI Error: {e}")
-        return jsonify({"simplified": "AI Service Unavailable (Check API Key)."})
+        return jsonify({"simplified": "Error processing text."})
 
 if __name__ == '__main__':
     app.run(port=5000, debug=True)

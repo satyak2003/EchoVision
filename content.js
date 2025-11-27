@@ -110,17 +110,38 @@ async function simplifyText() {
     }
 }
 
-function fixImages() {
-    const images = Array.from(document.querySelectorAll('img')).slice(0, 10);
+async function fixImages() {
+    const images = Array.from(document.querySelectorAll('img')).slice(0, 5); // Limit to 5 for speed
     let count = 0;
-    images.forEach(img => {
+    
+    speakText("Scanning images for missing descriptions...");
+
+    for (let img of images) {
         if (!img.alt || img.alt.trim() === "") {
+            // 1. Visual Highlight
             img.style.border = "4px solid #e74c3c";
-            img.alt = "AI Description Placeholder";
-            count++;
+            
+            // 2. Call Backend
+            try {
+                const res = await fetch('http://127.0.0.1:5000/describe-image', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ url: img.src })
+                });
+                const data = await res.json();
+                
+                // 3. Apply the Real AI Description
+                img.alt = data.description;
+                img.title = data.description; // Tooltip on hover
+                console.log("Fixed:", data.description);
+                count++;
+                
+            } catch (e) {
+                img.alt = "Image description unavailable";
+            }
         }
-    });
-    speakText(`I found and highlighted ${count} images missing descriptions.`);
+    }
+    speakText(`I used A I to generate descriptions for ${count} images.`);
 }
 
 // --- FORMATTING HELPERS ---

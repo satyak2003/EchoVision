@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "EchoLearn: AI Accessibility Helper",
+  "name": "EchoVision: AI Accessibility Helper",
   "version": "1.0",
   "description": "Makes the web accessible: Dyslexia Mode, TTS, High Contrast, and AI Simplification.",
   "permissions": ["activeTab", "scripting"],
