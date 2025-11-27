@@ -192,7 +192,7 @@ function processCommand(command) {
                 target: { tabId: tabs[0].id },
                 func: () => {
                     window.scrollBy({
-                        top: 500,
+                        top: 750,
                         left: 0,
                         behavior: "smooth"
                     });
@@ -211,7 +211,7 @@ function processCommand(command) {
                 target: { tabId: tabs[0].id },
                 func: () => {
                     window.scrollBy({
-                        top: -500,
+                        top: -750,
                         left: 0,
                         behavior: "smooth"
                     });
