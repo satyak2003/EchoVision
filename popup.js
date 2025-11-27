@@ -4,7 +4,7 @@ const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 let recognition = null;
 
 // WAKE WORD: The assistant only obeys if you say this first
-const WAKE_WORD = "echo"; 
+const WAKE_WORD = "helper"; 
 
 // --- DOM ELEMENTS ---
 const statusText = document.getElementById("statusText");
@@ -152,26 +152,41 @@ function processCommand(command) {
     }
 
     // 3. SCROLLING
-    else if (command.includes("scroll down") || command.includes("down")) {
-        chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
-            if (tabs[0].url.startsWith("chrome://")) return;
-            
-            chrome.scripting.executeScript({
-                target: {tabId: tabs[0].id},
-                func: () => window.scrollBy(0, 500)
-            }).catch(() => speak("Cannot scroll this page."));
-        });
-    }
-    else if (command.includes("scroll up") || command.includes("up")) {
-        chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
-            if (tabs[0].url.startsWith("chrome://")) return;
-            
-            chrome.scripting.executeScript({
-                target: {tabId: tabs[0].id},
-                func: () => window.scrollBy(0, -500)
-            }).catch(() => speak("Cannot scroll this page."));
-        });
-    }
+    // 3. SMOOTH SCROLLING
+else if (command.includes("scroll down") || command.includes("down")) {
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        if (tabs[0].url.startsWith("chrome://")) return; // Safety check
+        
+        chrome.scripting.executeScript({
+            target: { tabId: tabs[0].id },
+            func: () => {
+                window.scrollBy({
+                    top: 500,
+                    left: 0,
+                    behavior: "smooth"
+                });
+            }
+        }).catch(() => speak("Cannot scroll this page."));
+    });
+}
+
+else if (command.includes("scroll up") || command.includes("up")) {
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        if (tabs[0].url.startsWith("chrome://")) return;
+
+        chrome.scripting.executeScript({
+            target: { tabId: tabs[0].id },
+            func: () => {
+                window.scrollBy({
+                    top: -500,
+                    left: 0,
+                    behavior: "smooth"
+                });
+            }
+        }).catch(() => speak("Cannot scroll this page."));
+    });
+}
+
     
     // 4. FALLBACK, no valid command
     else {

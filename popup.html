@@ -1,68 +1,153 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>OpenAccess Assistant</title>
-  <style>
-    body { width: 320px; padding: 15px; font-family: 'Segoe UI', sans-serif; background: #f8f9fa; text-align: center; }
-    
-    /* Voice Status Pulse Animation */
-    .voice-status {
-      width: 60px; height: 60px; background: #ddd; border-radius: 50%;
-      margin: 0 auto 15px; display: flex; align-items: center; justify-content: center;
-      transition: 0.3s;
-      cursor: pointer;
-    }
-    .listening {
-      background: #e74c3c;
-      animation: pulse 1.5s infinite;
-      box-shadow: 0 0 15px #e74c3c;
-    }
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.1); }
-      100% { transform: scale(1); }
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OpenAccess Assistant</title>
+    <style>
+      body {
+        width: 320px;
+        padding: 15px;
+        font-family: "Segoe UI", sans-serif;
+        background: #f8f9fa;
+        text-align: center;
+      }
 
-    h1 { font-size: 20px; color: #2c3e50; margin: 0 0 10px 0; }
-    p { font-size: 14px; color: #7f8c8d; margin-bottom: 20px; }
-    
-    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .btn { padding: 10px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; color: white; display: flex; flex-direction: column; align-items: center; gap: 5px; transition: transform 0.1s; }
-    .btn:active { transform: scale(0.95); }
-    .btn:hover { opacity: 0.9; }
-    
-    .btn-contrast { background: #34495e; }
-    .btn-dyslexia { background: #f1c40f; color: black; }
-    .btn-read { background: #3498db; }
-    .btn-simplify { background: #27ae60; }
-    .btn-images { background: #e67e22; } /* New Button */
-    .btn-mic { width: 100%; margin-top: 10px; background: #e67e22; padding: 12px; font-size: 16px; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;}
+      /* Voice Status Pulse Animation */
+      .voice-status {
+        width: 60px;
+        height: 60px;
+        background: #ddd;
+        border-radius: 50%;
+        margin: 0 auto 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: 0.3s;
+        cursor: pointer;
+      }
+      .listening {
+        background: #e74c3c;
+        animation: pulse 1.5s infinite;
+        box-shadow: 0 0 15px #e74c3c;
+      }
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.1);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
 
-    .transcript { font-size: 12px; font-style: italic; color: #555; min-height: 20px; margin-top: 10px; }
-  </style>
-</head>
-<body>
-  
-  <div id="voiceIcon" class="voice-status" title="Click to Speak">
-    <span style="font-size: 30px;">🎙️</span>
-  </div>
+      h1 {
+        font-size: 20px;
+        color: #2c3e50;
+        margin: 0 0 10px 0;
+      }
+      p {
+        font-size: 14px;
+        color: #7f8c8d;
+        margin-bottom: 20px;
+      }
 
-  <h1>OpenAccess</h1>
-  <p id="statusText">Initializing...</p>
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+      .btn {
+        padding: 10px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: bold;
+        color: white;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 5px;
+        transition: transform 0.1s;
+      }
+      .btn:active {
+        transform: scale(0.95);
+      }
+      .btn:hover {
+        opacity: 0.9;
+      }
 
-  <div class="grid">
-    <button id="btnContrast" class="btn btn-contrast"><span>🌗</span> Contrast</button>
-    <button id="btnDyslexia" class="btn btn-dyslexia"><span>Aa</span> Dyslexia</button>
-    <button id="btnRead" class="btn btn-read"><span>🔊</span> Read</button>
-    <button id="btnSimplify" class="btn btn-simplify"><span>🧠</span> Simplify</button>
-  </div>
-  
-  <button id="btnImages" class="btn btn-images" style="width:100%; margin-top:10px;"><span>🖼️</span> Fix Images</button>
+      .btn-contrast {
+        background: #34495e;
+      }
+      .btn-dyslexia {
+        background: #f1c40f;
+        color: black;
+      }
+      .btn-read {
+        background: #3498db;
+      }
+      .btn-simplify {
+        background: #27ae60;
+      }
+      .btn-images {
+        background: #e67e22;
+      } /* New Button */
+      .btn-mic {
+        width: 100%;
+        margin-top: 10px;
+        background: #e67e22;
+        padding: 12px;
+        font-size: 16px;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: bold;
+      }
 
-  <div id="transcript" class="transcript"></div>
+      .transcript {
+        font-size: 12px;
+        font-style: italic;
+        color: #555;
+        min-height: 20px;
+        margin-top: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="voiceIcon" class="voice-status" title="Click to Speak">
+      <span style="font-size: 30px">🎙️</span>
+    </div>
 
-  <script src="popup.js"></script>
-</body>
+    <h1>OpenAccess</h1>
+    <p id="statusText">Initializing...</p>
+
+    <div class="grid">
+      <button id="btnContrast" class="btn btn-contrast">
+        <span>🌗</span> High Contrast
+      </button>
+      <button id="btnDyslexia" class="btn btn-dyslexia">
+        <span>Aa</span> Dyslexic mode
+      </button>
+      <button id="btnRead" class="btn btn-read"><span>🔊</span> Read</button>
+      <button id="btnSimplify" class="btn btn-simplify">
+        <span>🧠</span> Simplify
+      </button>
+    </div>
+
+    <button
+      id="btnImages"
+      class="btn btn-images"
+      style="width: 100%; margin-top: 10px"
+    >
+      <span>🖼️</span> Fix Images
+    </button>
+
+    <div id="transcript" class="transcript"></div>
+
+    <script src="popup.js"></script>
+  </body>
 </html>
