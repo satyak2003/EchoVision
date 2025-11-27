@@ -6,6 +6,15 @@ let recognition = null;
 // WAKE WORD: The assistant only obeys if you say this first
 const WAKE_WORD = "helper"; 
 
+// --- HELPER MENU ITEMS ---
+const HELPER_MENU_ITEMS = [
+    "High contrast",
+    "Dyslexic mode",
+    "Read",
+    "Simplify",
+    "Fix images"
+];
+
 // --- DOM ELEMENTS ---
 const statusText = document.getElementById("statusText");
 const voiceIcon = document.getElementById("voiceIcon");
@@ -112,7 +121,29 @@ function startListening() {
 
 // --- COMMAND PARSER (DYNAMIC WEBSITE LOGIC) ---
 function processCommand(command) {
-    
+    command = command.trim();
+
+    // MENU: explicit, forgiving matching for "menu"
+    if (
+        command === "menu" ||
+        command === "show menu" ||
+        command === "menu please" ||
+        command === "show me the menu" ||
+        command.includes("menu")
+    ) {
+        // Build a spoken list with numbers
+        const spoken = ["Here are the available helper commands."].concat(
+            HELPER_MENU_ITEMS.map((item, i) => `${i + 1}. ${item}.`)
+        ).join(" ");
+        // Visual feedback
+        transcriptDiv.innerText = `Menu: ${HELPER_MENU_ITEMS.join(" • ")}`;
+        transcriptDiv.style.color = "blue";
+        transcriptDiv.style.fontWeight = "600";
+        // Speak the menu
+        speak(spoken);
+        return;
+    }
+
     if (command.startsWith("open")) {
         // Remove "open" from the string
         let siteName = command.replace("open", "").trim();
@@ -130,67 +161,67 @@ function processCommand(command) {
     }
 
     // 2. ACCESSIBILITY FEATURES
-    else if (command.includes("contrast") || command.includes("dark")) {
+    else if (command.includes("contrast") || command.includes("dark")||command.includes("one")||command.includes("1")) {
         speak("Contrast toggled");
         sendMessage("TOGGLE_CONTRAST");
     }
-    else if (command.includes("dyslexia") || command.includes("font") || command.includes("dyslexic")) {
+    else if (command.includes("dyslexia") || command.includes("font") || command.includes("dyslexic")||command.includes("two")||command.includes("2")) {
         speak("Dyslexia mode on");
         sendMessage("TOGGLE_DYSLEXIA");
     }
-    else if (command.includes("read") || command.includes("speak")||command.includes("stop reading")) {
+    else if (command.includes("read") || command.includes("speak")||command.includes("stop reading")||command.includes("three")||command.includes("3")) {
         speak("Reading");
         sendMessage("READ_SELECTION");
     }
-    else if (command.includes("simplify") || command.includes("explain")) {
+    else if (command.includes("simplify") || command.includes("explain")||command.includes("four")||command.includes("4")) {
         speak("Simplifying");
         sendMessage("SIMPLIFY_SELECTION");
     }
-    else if (command.includes("image") || command.includes("fix")) {
+    else if (command.includes("image") || command.includes("fix")||command.includes("five")||command.includes("5")) {
         speak("Scanning images");
         sendMessage("FIX_IMAGES");
     }
 
     // 3. SCROLLING
     // 3. SMOOTH SCROLLING
-else if (command.includes("scroll down") || command.includes("down")) {
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-        if (tabs[0].url.startsWith("chrome://")) return; // Safety check
+    else if (command.includes("scroll down") || command.includes("down")) {
+        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+            if (tabs[0].url.startsWith("chrome://")) return; // Safety check
+            
+            chrome.scripting.executeScript({
+                target: { tabId: tabs[0].id },
+                func: () => {
+                    window.scrollBy({
+                        top: 500,
+                        left: 0,
+                        behavior: "smooth"
+                    });
+                }
+            }).catch(() => speak("Cannot scroll this page."));
+        });
+        speak("Scrolled Down");
+    }
+
+
+    else if (command.includes("scroll up") || command.includes("up")) {
+        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+            if (tabs[0].url.startsWith("chrome://")) return;
+
+            chrome.scripting.executeScript({
+                target: { tabId: tabs[0].id },
+                func: () => {
+                    window.scrollBy({
+                        top: -500,
+                        left: 0,
+                        behavior: "smooth"
+                    });
+                }
+            }).catch(() => speak("Cannot scroll this page."));
+        });
+        speak("Scrolled Up");
+    }
+
         
-        chrome.scripting.executeScript({
-            target: { tabId: tabs[0].id },
-            func: () => {
-                window.scrollBy({
-                    top: 500,
-                    left: 0,
-                    behavior: "smooth"
-                });
-            }
-        }).catch(() => speak("Cannot scroll this page."));
-    });
-    speak("Scrolled Down");
-}
-
-
-else if (command.includes("scroll up") || command.includes("up")) {
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-        if (tabs[0].url.startsWith("chrome://")) return;
-
-        chrome.scripting.executeScript({
-            target: { tabId: tabs[0].id },
-            func: () => {
-                window.scrollBy({
-                    top: -500,
-                    left: 0,
-                    behavior: "smooth"
-                });
-            }
-        }).catch(() => speak("Cannot scroll this page."));
-    });
-    speak("Scrolled Up");
-}
-
-    
     // 4. FALLBACK, no valid command
     else {
         speak("I am not sure how to do that.");
