@@ -1,11 +1,11 @@
 # EchoVision: AI Accessibility Assistant
 
-<img width="2816" height="1536" alt="icon png" src="https://github.com/user-attachments/assets/73e0a270-b159-4538-a967-d356075c130e" />
+<img width="2816" height="1536" alt="EchoVision logo" src="https://github.com/user-attachments/assets/73e0a270-b159-4538-a967-d356075c130e" />
 
 Breaking digital barriers with Voice Navigation & Generative AI.
 EchoVision is a light weight browser extension that is designed to aid people who are visually challenged, hearing impaired, limited motor function.
 
-<img width="459" height="537" alt="image" src="https://github.com/user-attachments/assets/56961996-e5c5-4ce2-9fbc-593fca03022c" />
+<img width="459" height="537" alt="preview of extension" src="https://github.com/user-attachments/assets/56961996-e5c5-4ce2-9fbc-593fca03022c" position="center" />
 
 ## 🚀 The Problem
 Digital Exclusion is a bottleneck. Millions of users with visual impairments, dyslexia, or motor disabilities struggle to navigate the modern web.
