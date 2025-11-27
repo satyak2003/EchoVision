@@ -4,14 +4,14 @@ const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 let recognition = null;
 
 // WAKE WORD: The assistant only obeys if you say this first
-const WAKE_WORD = "helper"; 
+const WAKE_WORD = "echo"; 
 
 // --- DOM ELEMENTS ---
 const statusText = document.getElementById("statusText");
 const voiceIcon = document.getElementById("voiceIcon");
 const transcriptDiv = document.getElementById("transcript");
 
-// --- HELPER: SEND MESSAGE TO CONTENT SCRIPT ---
+// --- ECHO: SEND MESSAGE TO CONTENT SCRIPT ---
 function sendMessage(type) {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
         const activeTab = tabs[0];
@@ -34,7 +34,7 @@ function sendMessage(type) {
     });
 }
 
-// --- HELPER: SPEAK TEXT ---
+// --- ECHO: SPEAK TEXT ---
 function speak(text) {
     // Cancel any current speech to avoid overlapping
     if (synth.speaking) synth.cancel();
@@ -69,7 +69,6 @@ if (Recognition) {
             transcriptDiv.style.fontWeight = "bold";
             
             // Strip the wake word to get the actual action
-            // "Helper open facebook" -> "open facebook"
             const action = command.replace(WAKE_WORD, "").trim();
             
             if (action.length > 0) {
@@ -79,23 +78,22 @@ if (Recognition) {
                 speak("I am listening.");
             }
         } else {
-            // Heard something, but no wake word
+            //wake word
             transcriptDiv.style.color = "#999"; // Grey out ignored text
             console.log("Ignored (No wake word):", command);
         }
     };
 
     recognition.onend = () => {
-        // If it stops (silence timeout), restart it automatically for "Always On" feel
-        // Note: Chrome kills this if popup closes. Keep popup open!
+        // Note: Chrome kills this if popup closes
         try {
             recognition.start(); 
             voiceIcon.classList.add("listening");
-        } catch(e) { /* ignore */ }
+        } catch(e) { }
     };
 
     recognition.onerror = (event) => {
-        if (event.error === 'no-speech') return; // Ignore silence errors
+        if (event.error === 'no-speech') return; 
         statusText.innerText = "Error: " + event.error;
         voiceIcon.classList.remove("listening");
     };
@@ -115,12 +113,11 @@ function startListening() {
 // --- COMMAND PARSER (DYNAMIC WEBSITE LOGIC) ---
 function processCommand(command) {
     
-    // 1. DYNAMIC "OPEN [WEBSITE]" LOGIC
     if (command.startsWith("open")) {
-        // Remove "open" from the string. "open facebook" -> "facebook"
+        // Remove "open" from the string
         let siteName = command.replace("open", "").trim();
         
-        // Remove common spaces (e.g., "face book" -> "facebook")
+        // Remove common spaces
         siteName = siteName.replace(/\s+/g, '');
 
         if (siteName) {
@@ -157,26 +154,28 @@ function processCommand(command) {
     // 3. SCROLLING
     else if (command.includes("scroll down") || command.includes("down")) {
         chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
-            if (tabs[0].url.startsWith("chrome://")) return; // Safety check
+            if (tabs[0].url.startsWith("chrome://")) return;
             
             chrome.scripting.executeScript({
                 target: {tabId: tabs[0].id},
-                func: () => window.scrollBy(0, 500)
+                func: () => window.scrollBy(0, 750)
+                speak("Scrolled down on current page")
             }).catch(() => speak("Cannot scroll this page."));
         });
     }
     else if (command.includes("scroll up") || command.includes("up")) {
         chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
-            if (tabs[0].url.startsWith("chrome://")) return; // Safety check
+            if (tabs[0].url.startsWith("chrome://")) return;
             
             chrome.scripting.executeScript({
                 target: {tabId: tabs[0].id},
-                func: () => window.scrollBy(0, -500)
+                func: () => window.scrollBy(0, -750)
+                speak("Scrolled up on current page")
             }).catch(() => speak("Cannot scroll this page."));
         });
     }
     
-    // 4. FALLBACK
+    // 4. FALLBACK, no valid command
     else {
         speak("I am not sure how to do that.");
     }
@@ -184,7 +183,6 @@ function processCommand(command) {
 
 // --- INITIALIZATION ---
 window.onload = () => {
-    // Auto-start listening silently
     setTimeout(() => {
         startListening();
         // Removed auto-greeting so it doesn't interrupt the user immediately
