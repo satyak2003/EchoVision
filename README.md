@@ -86,8 +86,8 @@ python app.py
 
 - Method A: Keyboard Shortcut (Fastest)
 
-Press Alt + E (or Option + U on Mac).
-The Voice Assistant will open instantly.
+Assign a key shortcut on Manage Extension.
+Press the assigned key to access the popup menu.
 Say "Helper" followed by a command (e.g., "Helper read this").
 
 - Method B: The Menu
