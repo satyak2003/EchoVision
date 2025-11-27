@@ -134,7 +134,7 @@ function processCommand(command) {
         speak("Contrast toggled");
         sendMessage("TOGGLE_CONTRAST");
     }
-    else if (command.includes("dyslexia") || command.includes("font")) {
+    else if (command.includes("dyslexia") || command.includes("font") || command.includes("dyslexic")) {
         speak("Dyslexia mode on");
         sendMessage("TOGGLE_DYSLEXIA");
     }
@@ -168,7 +168,9 @@ else if (command.includes("scroll down") || command.includes("down")) {
             }
         }).catch(() => speak("Cannot scroll this page."));
     });
+    speak("Scrolled Down");
 }
+
 
 else if (command.includes("scroll up") || command.includes("up")) {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
@@ -185,6 +187,7 @@ else if (command.includes("scroll up") || command.includes("up")) {
             }
         }).catch(() => speak("Cannot scroll this page."));
     });
+    speak("Scrolled Up");
 }
 
     
@@ -199,7 +202,7 @@ window.onload = () => {
     setTimeout(() => {
         startListening();
         // Removed auto-greeting so it doesn't interrupt the user immediately
-    }, 500);
+    }, 250);
     
     if (voiceIcon) voiceIcon.onclick = startListening;
 };
