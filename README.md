@@ -5,7 +5,7 @@
 Breaking digital barriers with Voice Navigation & Generative AI.
 EchoVision is a light weight browser extension that is designed to aid people who are visually challenged, hearing impaired, limited motor function.
 
-<img width="459" height="537" alt="preview of extension" src="https://github.com/user-attachments/assets/56961996-e5c5-4ce2-9fbc-593fca03022c" position="center" />
+<img width="457" height="448" alt="Screenshot 2025-11-28 091857" src="https://github.com/user-attachments/assets/1a7ee661-3fd6-42a7-988d-f626cc82e725" style="display: block; margin: 0 auto"/>
 
 ## 🚀 The Problem
 Digital Exclusion is a bottleneck. Millions of users with visual impairments, dyslexia, or motor disabilities struggle to navigate the modern web.
